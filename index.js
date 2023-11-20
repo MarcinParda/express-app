@@ -1,9 +1,27 @@
-const express = require('express');
+import express from 'express';
+import { ChatOpenAI } from 'langchain/chat_models/openai';
+import { HumanMessage, SystemMessage } from 'langchain/schema';
+import dotenv from 'dotenv';
+dotenv.config();
+
+const chatModel = new ChatOpenAI({ modelName: 'gpt-4' });
+
 const app = express();
 const port = 3000;
 
-app.get('/', (req, res) => {
+app.use(express.json());
+
+app.get('/', () => {
   res.send('Hello World!');
+});
+
+app.post('/', async (req, res) => {
+  console.log(req.body);
+  const { content } = await chatModel.call([
+    new SystemMessage('Answer question in user prompt.'),
+    new HumanMessage(req.body.question),
+  ]);
+  res.json({ reply: content });
 });
 
 app.listen(port, () => {
