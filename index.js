@@ -60,7 +60,7 @@ app.get('/add-conversation', async (req, res) => {
   res.json({ reply: content });
 });
 
-router.get('/get-conversations', async (req, res) => {
+app.get('/get-conversations', async (req, res) => {
   try {
     const result = await db.query(
       'SELECT conversation_id FROM your_table_name'
