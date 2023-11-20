@@ -33,13 +33,43 @@ app.post('/ownapi', async (req, res) => {
   res.json({ reply: content });
 });
 
-app.get('/clear/ownapipro', async (req, res) => {
+app.delete('/clear-conversations', async (req, res) => {
+  try {
+    await db.query('DELETE FROM conversations');
+    res.send('Table cleared successfully');
+  } catch (err) {
+    console.error('Error clearing table:', err);
+    res.status(500).send('Error clearing table');
+  }
+});
+
+app.get('/add-conversation', async (req, res) => {
   console.log(req.body);
+  try {
+    await db.query('INSERT INTO conversations (conversation_id) VALUES ($1)', [
+      '69',
+    ]);
+    res.status(201).send('Conversation ID added');
+  } catch (error) {
+    res.status(500).send('Error adding conversation ID');
+  }
   const { content } = await chatModel.call([
     new SystemMessage('Answer question in user prompt.'),
     new HumanMessage(req.body.question),
   ]);
   res.json({ reply: content });
+});
+
+router.get('/get-conversations', async (req, res) => {
+  try {
+    const result = await db.query(
+      'SELECT conversation_id FROM your_table_name'
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching conversation IDs:', err);
+    res.status(500).send('Error fetching conversation IDs');
+  }
 });
 
 app.listen(port, () => {
