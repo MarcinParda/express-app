@@ -2,7 +2,7 @@ import express from 'express';
 import { ChatOpenAI } from 'langchain/chat_models/openai';
 import { HumanMessage, SystemMessage } from 'langchain/schema';
 import dotenv from 'dotenv';
-import { db } from './db.js';
+import db from './db.js';
 dotenv.config();
 
 const chatModel = new ChatOpenAI({ modelName: 'gpt-4' });
