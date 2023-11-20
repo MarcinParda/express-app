@@ -11,11 +11,29 @@ const port = 3000;
 
 app.use(express.json());
 
-app.get('/', () => {
+app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
-app.post('/', async (req, res) => {
+app.post('/ownapi', async (req, res) => {
+  console.log(req.body);
+  const { content } = await chatModel.call([
+    new SystemMessage('Answer question in user prompt.'),
+    new HumanMessage(req.body.question),
+  ]);
+  res.json({ reply: content });
+});
+
+app.post('/ownapi', async (req, res) => {
+  console.log(req.body);
+  const { content } = await chatModel.call([
+    new SystemMessage('Answer question in user prompt.'),
+    new HumanMessage(req.body.question),
+  ]);
+  res.json({ reply: content });
+});
+
+app.get('/clear/ownapipro', async (req, res) => {
   console.log(req.body);
   const { content } = await chatModel.call([
     new SystemMessage('Answer question in user prompt.'),
