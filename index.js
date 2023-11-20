@@ -25,10 +25,35 @@ app.post('/ownapi', async (req, res) => {
   res.json({ reply: content });
 });
 
-app.post('/ownapi', async (req, res) => {
+app.post('/ownapipro', async (req, res) => {
   console.log(req.body);
+
+  try {
+    await db.query('INSERT INTO conversations (conversation_id) VALUES ($1)', [
+      req.body.question,
+    ]);
+  } catch (error) {
+    res.status(500).send('Error adding conversation ID');
+  }
+
+  let context = [];
+  try {
+    const result = await db.query('SELECT conversation_id FROM conversations');
+    result.rows.forEach((row) => {
+      context.push(row.conversation_id);
+    });
+  } catch (err) {
+    console.error('Error fetching conversation IDs:', err);
+    res.status(500).send('Error fetching conversation IDs');
+  }
+
+  const systemPrompt =
+    'Answer question in user prompt. \n\n' + context.join('\n');
+
+  console.log(systemPrompt);
+
   const { content } = await chatModel.call([
-    new SystemMessage('Answer question in user prompt.'),
+    new SystemMessage(systemPrompt),
     new HumanMessage(req.body.question),
   ]);
   res.json({ reply: content });
