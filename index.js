@@ -63,7 +63,7 @@ app.get('/add-conversation', async (req, res) => {
 
 app.get('/get-conversations', async (req, res) => {
   try {
-    const result = await db.query('SELECT conversation_id FROM ownapipro');
+    const result = await db.query('SELECT conversation_id FROM conversations');
     res.json(result.rows);
   } catch (err) {
     console.error('Error fetching conversation IDs:', err);
